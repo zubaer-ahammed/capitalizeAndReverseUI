@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverse and Capitalise with AWS Lambda</title>
+    <style>
+        body { font-family: Verdana; text-align: center; }
+        form { max-width: 500px; margin: 50px auto; padding: 30px 20px; box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5); }
+        .form-control { text-align: left; margin-bottom: 25px; }
+        .form-control input { padding: 10px; display: block; width: 95%; }
+    </style>
+</head>
+<body>
+<form id="form" onsubmit="callLambdaFunction(); return false;">
+    <div class="form-control">
+        <input type="text" id="inputText" placeholder="Enter some text here" />
+    </div>
+    <div class="form-control">
+        <button type="submit" value="submit">Submit</button>
+    </div>
+    <div class="form-control">
+        <input type="text" readonly id="outputText" placeholder="Output will appear here" />
+    </div>
+</form>
+<script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+<script type="text/javascript" src="lib/url-template/url-template.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+<script type="text/javascript" src="apigClient.js"></script>
+<script type="text/javascript">
+    function callLambdaFunction() {
+        try {
+            var inputTextValue = document.getElementById("inputText").value;
+            var apigClient = apigClientFactory.newClient();
+            var params = {};
+            var body = { inputText: inputTextValue };
+            apigClient.capitaliseandreversePost(params, body)
+                .then(function (result) {
+                    document.getElementById("outputText").value = JSON.parse(result.data.output).inputText;
+                })
+                .catch(function (result) {
+                    console.log(result);
+                });
+        } catch (error) {
+            console.log(error);
+        }
+        return false;
+    }
+</script>
+</body>
+</html>
